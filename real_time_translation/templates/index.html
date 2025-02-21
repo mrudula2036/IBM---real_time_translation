@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time English to Hindi Translation</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <h1>Real-Time English to Hindi Translator</h1>
+    
+    <form id="translationForm">
+        <textarea id="inputText" placeholder="Enter text in English..."></textarea><br>
+        <button type="submit">Translate</button>
+    </form>
+
+    <h2>Translated Text:</h2>
+    <p id="output"></p>
+
+    <script>
+        $(document).ready(function() {
+            $("#translationForm").submit(function(event) {
+                event.preventDefault();  // Prevent page reload
+
+                var inputText = $("#inputText").val().trim();
+                if (inputText === "") {
+                    alert("Please enter text to translate!");
+                    return;
+                }
+
+                $.ajax({
+                    url: "/translate",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ text: inputText }),
+                    success: function(response) {
+                        $("#output").text(response.translated_text);
+                    },
+                    error: function() {
+                        $("#output").text("Translation failed. Please try again.");
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
